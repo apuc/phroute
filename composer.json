@@ -1,12 +1,12 @@
 {
-  "name": "phroute/phroute",
+  "name": "apuc/phroute",
   "description": "Fast, fully featured restful request router for PHP",
   "keywords": ["routing", "router"],
   "license": "BSD-3-Clause",
   "authors": [
       {
-      "name": "Joe Green",
-      "email": "joe.green.0991@gmail.com"
+      "name": "Kavalar",
+      "email": "apuc06@mail.ru"
     }
   ],
   "autoload": {
