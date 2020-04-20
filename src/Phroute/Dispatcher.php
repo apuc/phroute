@@ -71,9 +71,11 @@ class Dispatcher {
     {
         while($filter = array_shift($filters))
         {
-        	$handler = $this->handlerResolver->resolve($filter);
+        	$handler = $this->handlerResolver->resolve($filter['closure']);
+
+        	$params = array_merge([$response], $filter['params']);
         	
-            if(($filteredResponse = call_user_func($handler, $response)) !== null)
+            if(($filteredResponse = call_user_func_array($handler, $params)) !== null)
             {
                 return $filteredResponse;
             }
@@ -89,20 +91,30 @@ class Dispatcher {
      * @return array
      */
     private function parseFilters($filters)
-    {        
+    {
         $beforeFilter = array();
         $afterFilter = array();
-        
+
         if(isset($filters[Route::BEFORE]))
         {
-            $beforeFilter = array_intersect_key($this->filters, array_flip((array) $filters[Route::BEFORE]));
+            foreach ($filters[Route::BEFORE] as $filter){
+                if(array_key_exists($filter['name'], $this->filters)){
+                    $beforeFilter[] = array_merge($filter, ['closure' => $this->filters[$filter['name']]]);
+                }
+            }
+            //$beforeFilter = array_intersect_key($this->filters, array_flip((array) $filters[Route::BEFORE]));
         }
 
         if(isset($filters[Route::AFTER]))
         {
-            $afterFilter = array_intersect_key($this->filters, array_flip((array) $filters[Route::AFTER]));
+            foreach ($filters[Route::AFTER] as $filter){
+                if(array_key_exists($filter['name'], $this->filters)){
+                    $afterFilter[] = array_merge($filter, ['closure' => $this->filters[$filter['name']]]);
+                }
+            }
+            //$afterFilter = array_intersect_key($this->filters, array_flip((array) $filters[Route::AFTER]));
         }
-        
+
         return array($beforeFilter, $afterFilter);
     }
 
