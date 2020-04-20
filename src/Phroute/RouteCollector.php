@@ -15,6 +15,7 @@ class RouteCollector implements RouteDataProviderInterface {
      *
      */
     const DEFAULT_CONTROLLER_ROUTE = 'index';
+
     /**
      *
      */
@@ -125,6 +126,13 @@ class RouteCollector implements RouteDataProviderInterface {
         {
             $this->reverse[$name] = $reverseData;
         }
+
+        if(array_key_exists(Route::BEFORE, $filters)){
+            $filters = [Route::BEFORE => [['name' => $filters[Route::BEFORE], 'params' =>  $filters['params']]]];
+        }
+        if(array_key_exists(Route::AFTER, $filters)){
+            $filters = [Route::AFTER => [['name' => $filters[Route::AFTER], 'params' =>  $filters['params']]]];
+        }
         
         $filters = array_merge_recursive($this->globalFilters, $filters);
 
@@ -184,6 +192,12 @@ class RouteCollector implements RouteDataProviderInterface {
      */
     public function group(array $filters, \Closure $callback)
     {
+        if(array_key_exists(Route::BEFORE, $filters)){
+            $filters = [Route::BEFORE => [['name' => $filters[Route::BEFORE], 'params' =>  isset($filters['params']) ? $filters['params'] : []]]];
+        }
+        if(array_key_exists(Route::AFTER, $filters)){
+            $filters = [Route::AFTER => [['name' => $filters[Route::AFTER], 'params' =>  isset($filters['params']) ? $filters['params'] : []]]];
+        }
         $oldGlobalFilters = $this->globalFilters;
 
         $oldGlobalPrefix = $this->globalRoutePrefix;
