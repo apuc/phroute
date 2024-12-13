@@ -16,7 +16,7 @@ $collector->group(array('prefix' => 'admin'), function(RouteCollector $collector
     $collector->group(['before' => 'auth'], function(RouteCollector $collector){
         $collector->get('pages', function(){
             return 'page management';
-        });
+        }, additionalInfo: ['description' => 'page management']);
 
         $collector->get('products', function(){
             return 'product management';
