@@ -44,7 +44,7 @@ class Dispatcher {
      */
     public function dispatch($httpMethod, $uri)
     {
-        list($handler, $filters, $vars) = $this->dispatchRoute($httpMethod, trim($uri, '/'));
+        list($handler, $filters, $vars, $additionalInfo) = $this->dispatchRoute($httpMethod, trim($uri, '/'));
 
         list($beforeFilter, $afterFilter) = $this->parseFilters($filters);
 
@@ -54,7 +54,8 @@ class Dispatcher {
         }
         
         $resolvedHandler = $this->handlerResolver->resolve($handler);
-        
+
+        $vars = array_merge($vars, $additionalInfo);
         $response = call_user_func_array($resolvedHandler, $vars);
 
         return $this->dispatchFilters($afterFilter, $response);
